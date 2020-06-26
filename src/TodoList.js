@@ -1,58 +1,69 @@
 import React, {Component, Fragment} from 'react'
 import TodoItem from './TodoItem'
-import './style.css'
+import {Input, Button, List} from 'antd'
+import store from './store/index'
+import 'antd/dist/antd.css'
 
 class TodoList extends Component {
     
-    state = {
-        inputValue : '',
-        list: [
-            'buy cat food',
-            'clean the house'
-        ]
-    }
     
     render() {
-        const {inputValue, list} = this.state
+        
+        const {inputValue, list} = store.getState()
+        store.subscribe(this.handleStoreChange)
         return (
-        <Fragment>
-            <div>
-                <label htmlFor="todo">Todo</label>
-                <input 
-                    id="todo"
+        
+            <div style={{marginTop: '10px', marginLeft: '10px'}}>
+                <div>
+                <Input 
+                    placeholder = "Todo"
+                    style={{width: '300px',marginRight: '10px'}}
                     value={inputValue}
                     className="input"
                     onChange={this.handleInputChange}
+
                 />
-                <button
+                <Button
                     onClick={this.handleBtnClick}
+                    type="primary"
                 >
                     Save
-                </button>
-            </div>
+                </Button>
+                </div>
             
-            <ul>
-                {
-                    this.getItemList(list)
-                }
-                
-            </ul>
-        </Fragment>    
+            
+            <List 
+                style={{width:'300px', marginTop: '10px'}}
+                bordered
+                dataSource = {list}
+                renderItem = {item => (<List.Item>{item}</List.Item>)}
+            />
+            </div>
         
         )
     }
 
     handleInputChange = (e) =>{
-        this.setState({
-            inputValue: e.target.value
-        })
+        const action = {
+            type: 'change_input_value',
+            value: e.target.value
+        }
+        store.dispatch(action)
     }
+    
     handleBtnClick = () => {
-        const {inputValue} = this.state
-        this.setState({
-            list: [...this.state.list, inputValue],
-            inputValue: ''
-        })
+        const {inputValue} = store.getState()
+        const action = {
+            type: 'add_input_value',
+            value: inputValue
+        }
+
+        store.dispatch(action)
+        
+        
+    }
+    handleStoreChange = () => {
+        this.setState(store.getState())
     }
     handleItemClick = (index) => {
         const list = [...this.state.list]
