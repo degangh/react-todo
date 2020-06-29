@@ -1,8 +1,8 @@
-import React, {Component, Fragment} from 'react'
-import TodoItem from './TodoItem'
+import React, {Component} from 'react'
 import {Input, Button, List} from 'antd'
 import store from './store/index'
 import 'antd/dist/antd.css'
+import { getDeleteItemAction, getInputChangeAction, getInputAddAction } from './store/actionCreator'
 
 class TodoList extends Component {
     
@@ -44,19 +44,13 @@ class TodoList extends Component {
     }
 
     handleInputChange = (e) =>{
-        const action = {
-            type: 'change_input_value',
-            value: e.target.value
-        }
+        const action = getInputChangeAction(e.target.value)
         store.dispatch(action)
     }
     
     handleBtnClick = () => {
-        const {inputValue} = store.getState()
-        const action = {
-            type: 'add_input_value',
-            value: inputValue
-        }
+        
+        const action = getInputAddAction()
 
         store.dispatch(action)
         
@@ -65,27 +59,11 @@ class TodoList extends Component {
         this.setState(store.getState())
     }
     handleItemDelete = (index) => {
-        const action = {
-            type: "delete_todo_item",
-            value: index
-        }
+        const action = getDeleteItemAction(index)
 
         store.dispatch(action)
     }
-    getItemList(list) {
-        return list.map((item, index) => {
-            return (
-            
-            <TodoItem 
-                item={item} 
-                index={index} 
-                key={index}
-                deleteItem={this.handleItemClick}
-            />
-            
-            )
-        })
-    }
+    
 }
 
 export default TodoList
