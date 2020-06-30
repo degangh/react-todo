@@ -1,44 +1,31 @@
 import React, {Component} from 'react'
-import {Input, Button, List} from 'antd'
+
 import store from './store/index'
+import TodoListUI from './TodoListUI'
 import 'antd/dist/antd.css'
 import { getDeleteItemAction, getInputChangeAction, getInputAddAction } from './store/actionCreator'
+import axios from 'axios'
+
 
 class TodoList extends Component {
     
-    
+    componentDidMount() {
+        axios.get('/api/todo').then((res)=>{
+            console.log(res)
+        })
+    }
     render() {
-        
         const {inputValue, list} = store.getState()
         store.subscribe(this.handleStoreChange)
         return (
         
-            <div style={{marginTop: '10px', marginLeft: '10px'}}>
-                <div>
-                <Input 
-                    placeholder = "Todo"
-                    style={{width: '300px',marginRight: '10px'}}
-                    value={inputValue}
-                    className="input"
-                    onChange={this.handleInputChange}
-
-                />
-                <Button
-                    onClick={this.handleBtnClick}
-                    type="primary"
-                >
-                    Save
-                </Button>
-                </div>
-            
-            
-            <List 
-                style={{width:'300px', marginTop: '10px'}}
-                bordered
-                dataSource = {list}
-                renderItem = {(item,index) => (<List.Item onClick={()=>{this.handleItemDelete(index)}}>{item}</List.Item>)}
+            <TodoListUI 
+                inputValue = {inputValue}
+                handleInputChange={this.handleInputChange}
+                handleBtnClick={this.handleBtnClick}
+                list = {list}
+                handleItemDelete={this.handleItemDelete}
             />
-            </div>
         
         )
     }
