@@ -3,16 +3,14 @@ import React, {Component} from 'react'
 import store from './store/index'
 import TodoListUI from './TodoListUI'
 import 'antd/dist/antd.css'
-import { getDeleteItemAction, getInputChangeAction, getInputAddAction } from './store/actionCreator'
-import axios from 'axios'
+import { getDeleteItemAction, getInputChangeAction, getInputAddAction, getTodoList } from './store/actionCreator'
 
 
 class TodoList extends Component {
     
     componentDidMount() {
-        axios.get('/api/todo').then((res)=>{
-            console.log(res)
-        })
+        const action = getTodoList();
+        store.dispatch(action)
     }
     render() {
         const {inputValue, list} = store.getState()
