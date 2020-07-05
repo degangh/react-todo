@@ -1,31 +1,46 @@
 import React, {Component} from 'react'
 import { ConfigProvider } from 'antd';
+import {Input, Button, List} from 'antd'
+import 'antd/dist/antd.css'
 import store from './store'
 import {connect} from 'react-redux'
-const TodoList = (props) => {
-    const {inputValue, list, changeInputValue,handleClick,handleDelete} = props
-    return (
-        <div>
-            <div>
-            <input 
-                value={inputValue}
-                onChange={changeInputValue}
-            />
-            <button
-                onClick={handleClick}
-            >
-                Save
-            </button>
+import axios from 'axios'
+
+class TodoList extends Component
+{
+    componentDidMount() {
+        this.props.initList()
+    }
+    
+    render () {
+        const {inputValue, list, changeInputValue,handleClick, handleDelete} = this.props
+        return (
+            <div  style={{margin: '20px'}}>
+                <div>
+                <Input 
+                    value={inputValue}
+                    onChange={changeInputValue}
+                    placeholder = "Todo"
+                    style={{width: '300px',marginRight: '10px'}}
+                />
+                <Button
+                    onClick={handleClick}
+                >
+                    Save
+                </Button>
+                </div>
+                
+                <List 
+                style={{width:'300px', marginTop: '10px'}}
+                bordered
+                dataSource = {list}
+        renderItem = {(item,index) => (<List.Item  onClick={()=>handleDelete(index)}>{item}</List.Item>)}
+                />
             </div>
-            <ul>
-                {list.map((item) => {
-                    return <li onClick={handleDelete}>{item}</li>
-                })}
-            </ul>
-        </div>
-    )
-        
+        )
+    }
 }
+
 
 const mapStateToProps = (state) => {
     return {
@@ -49,9 +64,30 @@ const mapDispatchToProps = (dispatch) => {
             }
             dispatch(action)
         },
-        handleDelete(index) {
+        initList() {
+            axios.get('/api/todo').then((res)=>{
+                console.log(res)
+                const action = {
+                    type: 'init_item_list',
+                    data: res.data
+                }
+                dispatch(action)
+            })
+            
+        },
 
+        handleDelete: (index) =>{
+            console.log(index)
+            const action = {
+                type: 'delete_item',
+                data: index
+            }
+            dispatch(action)
         }
     }
+        
+
+     
+    
 }
 export default connect(mapStateToProps,mapDispatchToProps)(TodoList)

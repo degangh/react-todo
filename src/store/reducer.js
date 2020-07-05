@@ -16,6 +16,19 @@ export default (state = defaultState, action) => {
         newState.inputValue = ''
         return newState
     }
+
+    if(action.type === 'init_item_list') {
+        const newState = JSON.parse(JSON.stringify(state))
+        newState.list = action.data
+        return newState
+    }
+
+    if(action.type === 'delete_item') {
+        console.log(action.data)
+        const newState = JSON.parse(JSON.stringify(state))
+        newState.list.splice(action.data, 1)
+        return newState
+    }
     
     return state
 }
