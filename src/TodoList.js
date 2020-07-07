@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
-import { ConfigProvider } from 'antd';
 import {Input, Button, List} from 'antd'
-import 'antd/dist/antd.css'
-import store from './store'
 import {connect} from 'react-redux'
 import axios from 'axios'
+
+import 'antd/dist/antd.css'
+
 
 class TodoList extends Component
 {
